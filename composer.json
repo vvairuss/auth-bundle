@@ -1,0 +1,36 @@
+{
+    "name": "svyaznoy/auth-bundle",
+    "description": "Auth bundle for OB projects",
+    "type": "symfony-bundle",
+    "license": "proprietary",
+    "require": {
+        "php": ">=7.2",
+        "ext-ctype": "*",
+        "ext-iconv": "*",
+        "symfony/flex": "^1.1",
+        "symfony/console": "*",
+        "symfony/dotenv": "*",
+        "symfony/framework-bundle": "*",
+        "symfony/yaml": "*",
+        "monolog/monolog": "^1.22",
+        "guzzlehttp/guzzle": "^6.3",
+        "symfony/security-core": "*",
+        "symfony/orm-pack": "*",
+        "ext-json": "*",
+        "ext-soap": "*"
+    },
+    "require-dev": {
+        "roave/security-advisories": "dev-master",
+        "symfony/test-pack": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Svyaznoy\\Bundle\\AuthBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Svyaznoy\\Bundle\\AuthBundle\\Tests\\": "tests/"
+        }
+    }
+}

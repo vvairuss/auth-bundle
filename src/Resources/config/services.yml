@@ -1,0 +1,52 @@
+parameters:
+    svyaznoy_auth.wso2is_oauth_token: '%env(resolve:WSO2IS_OAUTH_TOKEN)%'
+    svyaznoy_auth.wso2is_soap_validation_endpoint: '%env(resolve:WSO2IS_SOAP_VALIDATION_ENDPOINT)%'
+    svyaznoy_auth.wso2_login: '%env(resolve:WSO2_LOGIN)%'
+    svyaznoy_auth.wso2_password: '%env(resolve:WSO2_PASSWORD)%'
+    svyaznoy_auth.wso2is_admin_endpoint: '%env(resolve:WSO2IS_ADMIN_ENDPOINT)%'
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    Svyaznoy\Bundle\AuthBundle\:
+        resource: '../../*'
+        exclude: '../../{Tests,Repository,Kernel.php}'
+
+    Svyaznoy\Bundle\AuthBundle\Repository\IsTokenRepository:
+        arguments:
+            $soapClient: '@is.client'
+            $oauthTokenUrl: '%svyaznoy_auth.wso2is_oauth_token%'
+
+    Svyaznoy\Bundle\AuthBundle\Repository\UserRepository:
+        autowire: true
+        arguments:
+            $entityClass: 'Svyaznoy\Bundle\AuthBundle\Entity\User'
+        tags: ['doctrine.repository_service']
+
+    Svyaznoy\Bundle\AuthBundle\Repository\UserGroupRepository:
+        arguments:
+            - '@Doctrine\Common\Persistence\ManagerRegistry'
+            - Svyaznoy\Bundle\AuthBundle\Entity\UserGroup
+
+    Svyaznoy\Bundle\AuthBundle\Repository\AccessRightRepository:
+        arguments:
+            - '@Doctrine\Common\Persistence\ManagerRegistry'
+            - Svyaznoy\Bundle\AuthBundle\Entity\AccessRight
+
+    is.client:
+        class: Svyaznoy\Bundle\AuthBundle\Client\IsSoapClient
+        arguments:
+            $wsdl: '%svyaznoy_auth_bundle_path%/Resources/IS.wsdl'
+            $endpoint: '%svyaznoy_auth.wso2is_soap_validation_endpoint%'
+            $login: '%svyaznoy_auth.wso2_login%'
+            $password: '%svyaznoy_auth.wso2_password%'
+            $timeout: 10
+
+    is.user:
+        class: Svyaznoy\Bundle\AuthBundle\Service\ISUserService
+        arguments:
+            $userEndpoint: '%svyaznoy_auth.wso2is_admin_endpoint%'
+            $timeout: 10

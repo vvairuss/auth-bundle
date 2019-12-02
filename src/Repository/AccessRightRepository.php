@@ -4,11 +4,11 @@ namespace Svyaznoy\Bundle\AuthBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Svyaznoy\Bundle\AuthBundle\Entity\AccessRight;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 class AccessRightRepository extends ServiceEntityRepository
 {
-    public function __construct(RegistryInterface $registry)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, AccessRight::class);
     }

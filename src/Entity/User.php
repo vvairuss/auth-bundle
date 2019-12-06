@@ -419,6 +419,26 @@ class User implements UserInterface, Serializable
     }
 
     /**
+     * @return string|null
+     */
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string|null $type
+     *
+     * @return User
+     */
+    public function setType(?string $type): User
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
      * Returns the roles granted to the user.
      *
      *     public function getRoles()

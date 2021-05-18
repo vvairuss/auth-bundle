@@ -2,13 +2,22 @@
 
 namespace Svyaznoy\Bundle\AuthBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
+/**
+ * @ORM\Table(name="user_group")
+ * @ORM\Entity(repositoryClass="Svyaznoy\Bundle\AuthBundle\Repository\UserGroupRepository")
+ */
 class UserGroup
 {
     /**
      * @var int
+     *
+     * @ORM\Column(type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
@@ -16,21 +25,38 @@ class UserGroup
      * Название группы
      *
      * @var string
+     *
+     * @ORM\Column(type="string", length=80, nullable=false)
      */
     private $name;
 
     /**
      * @var ArrayCollection|User[]
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Svyaznoy\Bundle\AuthBundle\Entity\User",
+     *     mappedBy="group",
+     *     fetch="LAZY",
+     *     cascade={"persist"}
+     * )
      */
     private $users;
 
     /**
      * @var ArrayCollection|AccessRight[]
+     *
+     * @ORM\ManyToMany(targetEntity="Svyaznoy\Bundle\AuthBundle\Entity\AccessRight")
+     * @ORM\JoinTable(name="access_right_groups",
+     *      joinColumns={@ORM\JoinColumn(name="user_group_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="access_right_id", referencedColumnName="id")}
+     * )
      */
     private $accessRights;
 
     /**
      * @var int
+     *
+     * @ORM\Column(type="boolean", nullable=false, options={"unsigned":true})
      */
     private $deleted = 0;
 

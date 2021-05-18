@@ -2,16 +2,24 @@
 
 namespace Svyaznoy\Bundle\AuthBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
 /**
  * AccessRight
+ *
+ * @ORM\Table(name="access_right")
+ * @ORM\Entity(repositoryClass="Svyaznoy\Bundle\AuthBundle\Repository\AccessRightRepository")
  */
 class AccessRight
 {
     /**
      * @var int
+     *
+     * @ORM\Column(type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
@@ -19,6 +27,8 @@ class AccessRight
      * Название правила
      *
      * @var string
+     *
+     * @ORM\Column(type="string", length=80, nullable=false)
      */
     private $attribute;
 
@@ -26,6 +36,8 @@ class AccessRight
      * Субьект правила
      *
      * @var string
+     *
+     * @ORM\Column(type="string", length=80, nullable=true)
      */
     private $subject;
 
@@ -33,6 +45,8 @@ class AccessRight
      * Теги для группировки правил
      *
      * @var string
+     *
+     * @ORM\Column(type="string", length=128, nullable=true)
      */
     private $tags;
 
@@ -40,16 +54,26 @@ class AccessRight
      * Описание правила
      *
      * @var string
+     *
+     * @ORM\Column(type="string", length=128, nullable=true)
      */
     private $description;
 
     /**
      * @var int
+     *
+     * @ORM\Column(type="boolean", nullable=false, options={"unsigned":true})
      */
     private $deleted = 0;
 
     /**
      * @var ArrayCollection|UserGroup[]
+     *
+     * @ORM\ManyToMany(targetEntity="Svyaznoy\Bundle\AuthBundle\Entity\UserGroup")
+     * @ORM\JoinTable(name="access_right_groups",
+     *      joinColumns={@ORM\JoinColumn(name="access_right_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="user_group_id", referencedColumnName="id")}
+     * )
      */
     private $groups;
 

@@ -2,23 +2,35 @@
 
 namespace Svyaznoy\Bundle\AuthBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 use Serializable;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+/**
+ * @ORM\MappedSuperclass
+ */
 class User implements UserInterface, Serializable
 {
     /**
      * @var int
+     *
+     * @ORM\Column(type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     protected $id;
 
     /**
      * @var string
+     *
+     * @ORM\Column(type="string", length=50, nullable=true)
      */
     protected $sbrLogin;
 
     /**
      * @var string
+     *
+     * @ORM\Column(type="string", length=50, nullable=false)
      */
     protected $isUid;
 
@@ -26,6 +38,8 @@ class User implements UserInterface, Serializable
      * Имя пользователя
      *
      * @var string
+     *
+     * @ORM\Column(type="string", length=80, nullable=true)
      */
     protected $firstName;
 
@@ -33,21 +47,29 @@ class User implements UserInterface, Serializable
      * Фамилия пользователя
      *
      * @var string
+     *
+     * @ORM\Column(type="string", length=80, nullable=true)
      */
     protected $lastName;
 
     /**
      * @var string
+     *
+     * @ORM\Column(type="string", length=80, nullable=true)
      */
     protected $middleName;
 
     /**
      * @var string
+     *
+     * @ORM\Column(type="string", length=10, nullable=true)
      */
     protected $mobilePhone;
 
     /**
      * @var string
+     *
+     * @ORM\Column(type="string", length=10, nullable=true)
      */
     protected $workPhone;
 
@@ -55,51 +77,71 @@ class User implements UserInterface, Serializable
      * Тип занятости
      *
      * @var string
+     *
+     * @ORM\Column(type="string", length=400, nullable=true)
      */
     protected $employmentPosition;
 
     /**
      * @var string
+     *
+     * @ORM\Column(type="string", length=400, nullable=true)
      */
     protected $region;
 
     /**
      * @var int
+     *
+     * @ORM\Column(type="boolean", nullable=false, options={"unsigned":true})
      */
     protected $deleted = 0;
 
     /**
      * @var string
+     *
+     * @ORM\Column(type="string", length=50, nullable=false, unique=true)
      */
     protected $login;
 
     /**
      * @var string
+     *
+     * @ORM\Column(type="string", length=50, nullable=false, unique=true, options={"comment":"User email"})
      */
     protected $email;
 
     /**
      * @var int
+     *
+     * @ORM\Column(type="integer", nullable=false, options={"unsigned":true})
      */
     protected $salespointId;
 
     /**
      * @var string
+     *
+     * @ORM\Column(type="string", length=50, nullable=false, options={"comment":"WSO2IS & SBR pass"})
      */
     protected $password;
 
     /**
      * @var string
+     *
+     * @ORM\Column(type="string", length=150, nullable=true)
      */
     protected $sbrPassword;
 
     /**
      * @var string|null
+     *
+     * @ORM\Column(type="string", columnDefinition="ENUM('Widget', 'Seller', 'PartnerAdmin', 'PartnerManager')", nullable=true)
      */
     protected $type;
 
     /**
      * @var UserGroup|null
+     *
+     * @ORM\ManyToOne(targetEntity="Svyaznoy\Bundle\AuthBundle\Entity\UserGroup", inversedBy="users", fetch="EAGER")
      */
     protected $group;
 

@@ -1,6 +1,10 @@
 # CHANGELOG
 Все изменения описываются в данном файле
 
+## 1.0.3 - 2021-05-18
+### Improvement
+* SIDONLOB-4604 - Refactoring auth system
+
 ## 1.0.2 - 2019-12-06
 ### Improvement
 * SIDONLOB-4002 - Refactoring auth system

@@ -4,7 +4,7 @@ namespace Svyaznoy\Bundle\AuthBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Svyaznoy\Bundle\AuthBundle\Entity\UserGroup;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 
 class UserGroupRepository extends ServiceEntityRepository
 {

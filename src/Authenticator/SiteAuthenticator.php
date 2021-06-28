@@ -2,7 +2,7 @@
 
 namespace Svyaznoy\Bundle\AuthBundle\Authenticator;
 
-use Svyaznoy\Bundle\AuthBundle\Repository\IsTokenRepository;
+use Svyaznoy\Bundle\AuthBundle\Repository\SiteTokenRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,13 +13,13 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 
-class IsAuthenticator extends AbstractGuardAuthenticator
+class SiteAuthenticator extends AbstractGuardAuthenticator
 {
-    private $isTokenRepository;
+    private $tokenRepository;
 
-    public function __construct(IsTokenRepository $isTokenRepository)
+    public function __construct(SiteTokenRepository $tokenRepository)
     {
-        $this->isTokenRepository = $isTokenRepository;
+        $this->tokenRepository = $tokenRepository;
     }
 
     /**
@@ -51,7 +51,7 @@ class IsAuthenticator extends AbstractGuardAuthenticator
             $token
         );
 
-        $tokenIS = $this->isTokenRepository->find($token['token']);
+        $tokenIS = $this->tokenRepository->find($token['token']);
 
         if (!$tokenIS) {
             throw new TokenNotFoundException();

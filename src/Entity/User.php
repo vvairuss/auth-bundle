@@ -18,21 +18,28 @@ class User implements UserInterface, Serializable
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    protected $id;
+    private $id;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", length=50, nullable=true)
      */
-    protected $sbrLogin;
+    private $sbrLogin;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", length=50, nullable=false)
      */
-    protected $isUid;
+    private $isUid;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $siteUid;
 
     /**
      * Имя пользователя
@@ -41,7 +48,7 @@ class User implements UserInterface, Serializable
      *
      * @ORM\Column(type="string", length=80, nullable=true)
      */
-    protected $firstName;
+    private $firstName;
 
     /**
      * Фамилия пользователя
@@ -50,28 +57,28 @@ class User implements UserInterface, Serializable
      *
      * @ORM\Column(type="string", length=80, nullable=true)
      */
-    protected $lastName;
+    private $lastName;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", length=80, nullable=true)
      */
-    protected $middleName;
+    private $middleName;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", length=10, nullable=true)
      */
-    protected $mobilePhone;
+    private $mobilePhone;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", length=10, nullable=true)
      */
-    protected $workPhone;
+    private $workPhone;
 
     /**
      * Тип занятости
@@ -80,70 +87,70 @@ class User implements UserInterface, Serializable
      *
      * @ORM\Column(type="string", length=400, nullable=true)
      */
-    protected $employmentPosition;
+    private $employmentPosition;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", length=400, nullable=true)
      */
-    protected $region;
+    private $region;
 
     /**
      * @var int
      *
      * @ORM\Column(type="boolean", nullable=false, options={"unsigned":true})
      */
-    protected $deleted = 0;
+    private $deleted = 0;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", length=50, nullable=false, unique=true)
      */
-    protected $login;
+    private $login;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", length=50, nullable=false, unique=true, options={"comment":"User email"})
      */
-    protected $email;
+    private $email;
 
     /**
      * @var int
      *
      * @ORM\Column(type="integer", nullable=false, options={"unsigned":true})
      */
-    protected $salespointId;
+    private $salespointId;
 
     /**
-     * @var string
+     * @var string|null
      *
-     * @ORM\Column(type="string", length=50, nullable=false, options={"comment":"WSO2IS & SBR pass"})
+     * @ORM\Column(type="string", length=50, nullable=false, options={"comment":"site & SBR pass"})
      */
-    protected $password;
+    private $password;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", length=150, nullable=true)
      */
-    protected $sbrPassword;
+    private $sbrPassword;
 
     /**
      * @var string|null
      *
      * @ORM\Column(type="string", columnDefinition="ENUM('Widget', 'Seller', 'PartnerAdmin', 'PartnerManager')", nullable=true)
      */
-    protected $type;
+    private $type;
 
     /**
      * @var UserGroup|null
      *
      * @ORM\ManyToOne(targetEntity="Svyaznoy\Bundle\AuthBundle\Entity\UserGroup", inversedBy="users", fetch="EAGER")
      */
-    protected $group;
+    private $group;
 
     /**
      * @see \Serializable::serialize()
@@ -216,6 +223,26 @@ class User implements UserInterface, Serializable
     public function setIsUid(string $isUid): User
     {
         $this->isUid = $isUid;
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getSiteUid(): ?int
+    {
+        return $this->siteUid;
+    }
+
+    /**
+     * @param int $siteUid
+     *
+     * @return User
+     */
+    public function setSiteUid(int $siteUid): User
+    {
+        $this->siteUid = $siteUid;
 
         return $this;
     }
@@ -510,6 +537,17 @@ class User implements UserInterface, Serializable
     public function getPassword()
     {
         return $this->password;
+    }
+
+    /**
+     * @param string|null $password
+     * @return User
+     */
+    public function setPassword(?string $password): User
+    {
+        $this->password = $password;
+
+        return $this;
     }
 
     /**

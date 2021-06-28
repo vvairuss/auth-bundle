@@ -1,9 +1,9 @@
 parameters:
-    svyaznoy_auth.wso2is_oauth_token: '%env(resolve:WSO2IS_OAUTH_TOKEN)%'
-    svyaznoy_auth.wso2is_soap_validation_endpoint: '%env(resolve:WSO2IS_SOAP_VALIDATION_ENDPOINT)%'
-    svyaznoy_auth.wso2_login: '%env(resolve:WSO2_LOGIN)%'
-    svyaznoy_auth.wso2_password: '%env(resolve:WSO2_PASSWORD)%'
-    svyaznoy_auth.wso2is_admin_endpoint: '%env(resolve:WSO2IS_ADMIN_ENDPOINT)%'
+    svyaznoy_auth.site_token_endpoint: '%env(resolve:SVYAZNOY_API_AUTH_ENDPOINT)%'
+    svyaznoy_auth.site_token_info_endpoint: '%env(resolve:SVYAZNOY_API_AUTH_INFO_ENDPOINT)%'
+    svyaznoy_auth.site_admin_endpoint: '%env(resolve:SVYAZNOY_API_ADMIN_ENDPOINT)%'
+    svyaznoy_auth.site_find_by_email_endpoint: '%env(resolve:SVYAZNOY_API_EMAIL_SEARCH_ENDPOINT)%'
+    svyaznoy_auth.http_proxy: '%env(resolve:REVO_PROXY)%'
 
 services:
     _defaults:
@@ -15,10 +15,11 @@ services:
         resource: '../../*'
         exclude: '../../{Tests,Repository,Kernel.php}'
 
-    Svyaznoy\Bundle\AuthBundle\Repository\IsTokenRepository:
+    Svyaznoy\Bundle\AuthBundle\Repository\SiteTokenRepository:
         arguments:
-            $soapClient: '@is.client'
-            $oauthTokenUrl: '%svyaznoy_auth.wso2is_oauth_token%'
+            $tokenUrl: '%svyaznoy_auth.site_token_endpoint%'
+            $tokenInfoUrl: '%svyaznoy_auth.site_token_info_endpoint%'
+            $proxy: '%svyaznoy_auth.http_proxy%'
 
     Svyaznoy\Bundle\AuthBundle\Repository\UserRepository:
         autowire: true
@@ -36,17 +37,9 @@ services:
             - '@Doctrine\Common\Persistence\ManagerRegistry'
             - Svyaznoy\Bundle\AuthBundle\Entity\AccessRight
 
-    is.client:
-        class: Svyaznoy\Bundle\AuthBundle\Client\IsSoapClient
-        arguments:
-            $wsdl: '%svyaznoy_auth_bundle_path%/Resources/IS.wsdl'
-            $endpoint: '%svyaznoy_auth.wso2is_soap_validation_endpoint%'
-            $login: '%svyaznoy_auth.wso2_login%'
-            $password: '%svyaznoy_auth.wso2_password%'
-            $timeout: 10
-
     is.user:
-        class: Svyaznoy\Bundle\AuthBundle\Service\ISUserService
+        class: Svyaznoy\Bundle\AuthBundle\Service\SiteUserService
         arguments:
-            $userEndpoint: '%svyaznoy_auth.wso2is_admin_endpoint%'
-            $timeout: 10
+            $endpoint: '%svyaznoy_auth.site_admin_endpoint%'
+            $findByEmailEndpoint: '%svyaznoy_auth.site_find_by_email_endpoint%'
+            $proxy: '%svyaznoy_auth.http_proxy%'

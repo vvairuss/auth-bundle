@@ -21,11 +21,10 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder('svyaznoy_auth');
         $treeBuilder->getRootNode()
             ->children()
-            ->scalarNode('wso2is_oauth_token')->end()
-            ->scalarNode('wso2is_soap_validation_endpoint')->end()
-            ->scalarNode('wso2_login')->end()
-            ->scalarNode('wso2_password')->end()
-            ->scalarNode('wso2is_admin_endpoint')->end()
+            ->scalarNode('site_token_endpoint')->end()
+            ->scalarNode('site_token_info_endpoint')->end()
+            ->scalarNode('site_admin_endpoint')->end()
+            ->scalarNode('site_find_by_email_endpoint')->end()
             ->end();
 
         return $treeBuilder;

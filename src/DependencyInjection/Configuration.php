@@ -24,7 +24,6 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('site_token_endpoint')->end()
             ->scalarNode('site_token_info_endpoint')->end()
             ->scalarNode('site_admin_endpoint')->end()
-            ->scalarNode('site_find_by_email_endpoint')->end()
             ->end();
 
         return $treeBuilder;

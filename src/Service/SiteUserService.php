@@ -3,11 +3,14 @@
 namespace Svyaznoy\Bundle\AuthBundle\Service;
 
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 use Svyaznoy\Bundle\AuthBundle\Exception\BadPhoneFormatException;
+use Svyaznoy\Bundle\AuthBundle\Exception\UserNotFoundException;
 use Svyaznoy\Bundle\AuthBundle\Repository\SiteTokenRepository;
+use Symfony\Component\HttpFoundation\Response;
 
 class SiteUserService
 {
@@ -32,15 +35,18 @@ class SiteUserService
     /** @var string */
     private $adminPassword;
 
+    private const CREATE_URL = 'v1/users/register/profile';
+    private const PROFILE_URL = 'v1/users/%s/profile';
+    private const FIND_BY_EMAIL_URL = 'v1/users/profile-by-email?email=%s';
+    private const RESTORE_PASSWORD_DEMAND = 'v1/users/restore/password/demand';
+
     public function __construct(
         string $endpoint,
-        string $findByEmailEndpoint,
         string $proxy,
         SiteTokenRepository $tokenRepository,
         ClientInterface $client
     ) {
         $this->endpoint = $endpoint;
-        $this->findByEmailEndpoint = $findByEmailEndpoint;
         $this->proxy = $proxy;
         $this->tokenRepository = $tokenRepository;
         $this->client = $client;
@@ -72,7 +78,7 @@ class SiteUserService
     {
         $response = $this->sendRequest(
             'POST',
-            sprintf($this->endpoint, 'register'),
+            self::CREATE_URL,
             [
                 'email' => $login,
                 'password' => $password,
@@ -97,7 +103,7 @@ class SiteUserService
      */
     public function get($uid)
     {
-        $response = $this->sendRequest('GET', sprintf($this->endpoint, $uid));
+        $response = $this->sendRequest('GET', sprintf(self::PROFILE_URL, $uid));
         $result = json_decode($response->getBody());
 
         if (!isset($result->id)) {
@@ -121,7 +127,7 @@ class SiteUserService
     {
         $response = $this->sendRequest(
             'PUT',
-            sprintf($this->endpoint, $uid),
+            sprintf(self::PROFILE_URL, $uid),
             [
                 'phone' => $this->getPhone($mobilePhone),
             ]
@@ -148,7 +154,7 @@ class SiteUserService
     {
         $response = $this->sendRequest(
             'PUT',
-            sprintf($this->endpoint, $uid),
+            sprintf(self::PROFILE_URL, $uid),
             [
                 'password' => $newPassword,
                 'current_password' => $currentPassword,
@@ -171,11 +177,25 @@ class SiteUserService
     {
         $response = $this->sendRequest(
             'GET',
-            sprintf($this->findByEmailEndpoint, $email)
+            sprintf(self::FIND_BY_EMAIL_URL, $email)
         );
         $result = json_decode($response->getBody());
 
         return $result->id;
+    }
+
+    public function demandRestorePassword(string $login)
+    {
+        try {
+            $this->sendRequest('PUT', self::RESTORE_PASSWORD_DEMAND, ['login' => $login]);
+        } catch (ClientException $e) {
+            $statusCode = $e->getResponse()->getStatusCode();
+            if ($statusCode === Response::HTTP_BAD_REQUEST) {
+                throw new UserNotFoundException($e->getMessage());
+            }
+
+            throw $e;
+        }
     }
 
     /**
@@ -194,7 +214,7 @@ class SiteUserService
         return $matches['phone'];
     }
 
-    private function sendRequest(string $method, string $endpoint, array $data = null): ResponseInterface
+    private function sendRequest(string $method, string $url, array $data = null): ResponseInterface
     {
         $token = $this->tokenRepository->getClientToken(
             $this->adminLogin,
@@ -215,7 +235,7 @@ class SiteUserService
 
         $response = $this->client->request(
             $method,
-            $endpoint,
+            $this->endpoint . $url,
             $requestOptions
         );
 

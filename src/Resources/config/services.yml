@@ -1,8 +1,7 @@
 parameters:
     svyaznoy_auth.site_token_endpoint: '%env(resolve:SVYAZNOY_API_AUTH_ENDPOINT)%'
     svyaznoy_auth.site_token_info_endpoint: '%env(resolve:SVYAZNOY_API_AUTH_INFO_ENDPOINT)%'
-    svyaznoy_auth.site_admin_endpoint: '%env(resolve:SVYAZNOY_API_ADMIN_ENDPOINT)%'
-    svyaznoy_auth.site_find_by_email_endpoint: '%env(resolve:SVYAZNOY_API_EMAIL_SEARCH_ENDPOINT)%'
+    svyaznoy_auth.site_admin_endpoint: '%env(resolve:SVYAZNOY_API_ENDPOINT)%'
     svyaznoy_auth.http_proxy: '%env(resolve:REVO_PROXY)%'
 
 services:
@@ -41,5 +40,4 @@ services:
         class: Svyaznoy\Bundle\AuthBundle\Service\SiteUserService
         arguments:
             $endpoint: '%svyaznoy_auth.site_admin_endpoint%'
-            $findByEmailEndpoint: '%svyaznoy_auth.site_find_by_email_endpoint%'
             $proxy: '%svyaznoy_auth.http_proxy%'

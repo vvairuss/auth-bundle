@@ -1,5 +1,5 @@
 {
-    "name": "svyaznoy/auth-bundle",
+    "name": "vvairuss/auth-bundle",
     "description": "Auth bundle for OB projects",
     "type": "symfony-bundle",
     "license": "proprietary",
